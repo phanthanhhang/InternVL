@@ -1,0 +1,13 @@
+{
+    
+    "vdn_extract_filelds_text_only": {
+      "root": "/",
+      "annotation": "/data1/hang/Stellantis/InternVL/notebooks/vdn_chat_valid_only_fieldtext.jsonl",
+      "data_augment": true,  
+      "max_dynamic_patch": 24,
+      "repeat_time": 2,
+      "length": 5190
+    }
+}
+
+    

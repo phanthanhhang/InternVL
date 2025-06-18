@@ -21,14 +21,14 @@ formatted_data = []
 for idx, (s3_img, annotations) in enumerate(vdn_data.items()):
     entry = {"id": idx}
     local_img_path = os.path.join(local_image_dir, os.path.basename(s3_img))
-    entry["image"] = [local_img_path]
+    entry["image"] = local_img_path
     # pprint(annotations)
     # Get width/height from any annotation (they are the same for all)
     if not annotations:
         continue
     first_ann = next(iter(annotations.values()))
-    entry["width_list"] = [first_ann["image_width"]]
-    entry["height_list"] = [first_ann["image_height"]]
+    entry["width_list"] = first_ann["image_width"]
+    entry["height_list"] = first_ann["image_height"]
 
     # Extract fields
     extracted = {}
@@ -42,11 +42,35 @@ for idx, (s3_img, annotations) in enumerate(vdn_data.items()):
 
     # Conversation
     prompt = (
-        "<image>\nExtract the following information in this follow json format: "
-        "first_name, family_name, address_street,address_house_no, address_zip, address_city, "
-        "SV_number, tax_id, salary_month,gross_payment, real_payment, net_payment,bank_account, "
-        "bank_name, title_name,company_name, address_additional"
+    "<image>\n"
+    "You are a document information extraction assistant.\n"
+    "Extract the required information from the document and return it in the following JSON structure.\n"
+    "Use the provided field descriptions and keyword hints for accurate matching.\n"
+    "Return null if a field is missing. Do not add explanations.\n\n"
+    "Output format:\n"
+    "{\n"
+    "  \"first_name\": \"Given name (e.g., 'Carolin')\",\n"
+    "  \"family_name\": \"Family or last name (e.g., 'Balgenort')\",\n"
+    "  \"title_name\": \"Title or honorific usually before the name, like Mr., Ms., Dr., Herr, Frau, etc.\ Use the title that is before the name, not after the name.\n"
+    "  \"address_street\": \"Street name only, without house number (e.g., 'Hof im Hagen')\",\n"
+    "  \"address_house_no\": \"House or building number (e.g., '7')\",\n"
+    "  \"address_additional\": \"Optional address info (e.g., apartment, district)\",\n"
+    "  \"address_zip\": \"Postal/ZIP code (e.g., '49134')\",\n"
+    "  \"address_city\": \"City or townname (e.g., 'Wallenhorst'). If the city is not in the document, return 'null'.\n"
+    "  \"SV_number\": \"Social security or pension number. Look for labels like 'SV-Nr.', 'RV-Nr.', or 'RV-Nummer'. Must be 12 characters, with 1 letter at position 10 (e.g., '50130984D504')\",\n"
+    "  \"tax_id\": \"Tax identification number. Look for 'Steuer-ID', 'Steuer-Ident-Nr.'. It should be exactly 11 digits (e.g., '49285079139')\",\n"
+    "  \"salary_month\": \"Salary period. Look for labels like 'Monat', 'für'. (e.g., '2025-04, April 2025')\",\n"
+    "  \"gross_payment\": \"Monthly gross amount. Use value labeled like 'Gesamtbrutto' or 'Brutto'. Return number only, e.g., '3764.01'\",\n"
+    "  \"net_payment\": \"Statutory net amount. Look for 'Gesetzliches Netto' or 'Netto'. Return number only, e.g., '3100.10'\",\n"
+    "  \"real_payment\": \"Actual paid amount. Use value near bank name/number or 'Auszahlungsbetrag'. Return number only, e.g., '3100.10'\",\n"
+    "  \"bank_account\": \"Bank account number or IBAN. Usually starts with 'DE' (Germany), near 'überwiesen' or 'Konto', usually 22-27 characters long\",\n"
+    "  \"bank_name\": \"Bank name (e.g., 'Frankfurter Sparkasse'). Usually follows 'überwiesen bei' or after IBAN\",\n"
+    "  \"company_name\": \"Company name. Look for label 'Firma' or names containing 'GmbH', 'AG', 'UG', 'oHG', 'BGB-Gesellschaft', 'Kommanditgesellschaft', etc.\"\n"
+    "}\n"
+    "If any field is missing or not visible in the document, set its value to null.\n"
+    "Return only the JSON, with no explanation or commentary."
     )
+
     entry["conversations"] = [
         {"from": "human", "value": prompt},
         {"from": "gpt", "value": json.dumps(extracted, ensure_ascii=False)}

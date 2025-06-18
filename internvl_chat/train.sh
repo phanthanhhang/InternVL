@@ -1,0 +1,1 @@
+GPUS=3 PER_DEVICE_BATCH_SIZE=1 BATCH_SIZE=3 bash /data1/hang/Stellantis/InternVL/internvl_chat/shell/internvl3.0/2nd_finetune/vdn_internvl3_1b_dynamic_res_2nd_finetune_lora.sh
