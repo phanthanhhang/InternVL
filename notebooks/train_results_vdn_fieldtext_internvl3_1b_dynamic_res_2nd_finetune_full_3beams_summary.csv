@@ -1,0 +1,12 @@
+metric,value
+macro_precision,0.8235382791924308
+macro_recall,0.8189362205128164
+macro_f1,0.8203874445410637
+macro_accuracy,0.7939148073022312
+micro_precision,0.9267412486466979
+micro_recall,0.9181265641759028
+micro_f1,0.9224137931034483
+micro_accuracy,0.9005982512655315
+document_accuracy,0.07241379310344828
+perfect_documents,21.0
+valid_documents,290.0
