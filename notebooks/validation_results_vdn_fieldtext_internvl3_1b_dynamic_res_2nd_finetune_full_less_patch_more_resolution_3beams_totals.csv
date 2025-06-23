@@ -1,0 +1,2 @@
+total_fields,total_tp,total_tn,total_fp,total_fn,total_samples,total_non_null_samples,total_null_samples,total_exact_matches,total_non_null_matches,macro_precision,macro_recall,macro_f1,macro_accuracy,micro_precision,micro_recall,micro_f1,micro_accuracy,document_accuracy,perfect_documents,valid_documents
+17,8587,4417,624,641,15589,10548,5041,13004,8587,0.8489731515429264,0.8407658735058491,0.8418126348649488,0.8341779459875553,0.9322549126044947,0.9305374945817079,0.931395411898693,0.911346275141916,0.14940021810250817,137,917
